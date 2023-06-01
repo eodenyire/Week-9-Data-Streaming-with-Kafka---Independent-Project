@@ -48,6 +48,64 @@ producer.flush()
 # Close the producer
 #producer.close()
 
+data_list = []
+
+# First record
+data = {
+    "transaction_id": "12345",
+    "sender_phone_number": "256777192516",
+    "receiver_phone_number": "256772961935",
+    "transaction_amount": 100000,
+    "transaction_time": "2023-04-19 12:00:00"
+}
+data_list.append(data)
+
+# Second record
+data = {
+    "transaction_id": "54321",
+    "sender_phone_number": "256777192516",
+    "receiver_phone_number": "256772961935",
+    "transaction_amount": 50000,
+    "transaction_time": "2023-04-20 09:30:00"
+}
+data_list.append(data)
+
+# Third record
+data = {
+    "transaction_id": "98765",
+    "sender_phone_number": "256777192516",
+    "receiver_phone_number": "256772961935",
+    "transaction_amount": 250000,
+    "transaction_time": "2023-04-21 15:45:00"
+}
+data_list.append(data)
+
+# Fourth record
+data = {
+    "transaction_id": "24680",
+    "sender_phone_number": "256777192516",
+    "receiver_phone_number": "256772961935",
+    "transaction_amount": 150000,
+    "transaction_time": "2023-04-22 10:20:00"
+}
+data_list.append(data)
+
+# Fifth record
+data = {
+    "transaction_id": "13579",
+    "sender_phone_number": "256777192516",
+    "receiver_phone_number": "256772961935",
+    "transaction_amount": 75000,
+    "transaction_time": "2023-04-23 18:00:00"
+}
+data_list.append(data)
+
+# Produce the records to the Kafka topic
+for data in data_list:
+    producer.produce(topic, json.dumps(data).encode('utf-8'))
+
+producer.flush()
+
 from confluent_kafka import Producer
 import json
 
@@ -230,7 +288,7 @@ if not data.empty:
     plt.figure(figsize=(8, 6))
     data['transaction_time'] = pd.to_datetime(data['transaction_time'])  # Convert transaction_time to datetime
     data = data.sort_values('transaction_time')  # Sort data by transaction_time
-    plt.plot(data['transaction_time'], data['transaction_amount'])
+    plt.plot(data['transaction_time'], data['transaction_id'])
     plt.xlabel('Transaction Time')
     plt.ylabel('Transaction Amount')
     plt.title('Transaction Amounts Over Time')
@@ -263,3 +321,12 @@ if not data.empty:
     plt.show()
 else:
     print("No data available to visualize.")
+
+#Histogram of Transaction Amounts:
+
+plt.figure(figsize=(8, 6))
+plt.hist(data['transaction_id'], bins=10)
+plt.xlabel('transaction_id')
+plt.ylabel('Frequency')
+plt.title('Histogram of Transaction Amounts')
+plt.show()
